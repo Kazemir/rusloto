@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Русское лото - Тираж №1711</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Русское лото</h1>
+            <div class="lottery-info">
+                <h2>Тираж №1711</h2>
+                <p>14 января 2026 18:00</p>
+            </div>
+        </header>
+
+        <div id="start-screen" class="start-screen">
+            <div class="start-content">
+                <div class="lottery-stats">
+                    <div class="stat-card">
+                        <div class="stat-label">Количество купленных билетов</div>
+                        <div class="stat-value">782 854</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-label">Призовой фонд тиража</div>
+                        <div class="stat-value highlight">58 714 050 ₽</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-label">Суперприз</div>
+                        <div class="stat-value superprize">900 000 000 ₽</div>
+                    </div>
+                </div>
+
+                <button id="start-game-button" class="start-game-button">Начать игру</button>
+            </div>
+        </div>
+
+        <div class="game-wrapper" id="game-screen" style="display: none;">
+            <!-- Three.js canvas будет здесь -->
+            <div id="canvas-container"></div>
+
+            <div class="info-panel">
+                <div class="tour-info">
+                    <h3>Тур <span id="current-tour">-</span></h3>
+                    <div id="current-number" class="current-number">?</div>
+                </div>
+
+                <div class="win-info" id="win-info" style="display: none;">
+                    <div class="win-label">Выигрыш в туре:</div>
+                    <div class="win-amount" id="win-amount">0 ₽</div>
+                    <div class="win-tickets">Выигравших билетов: <span id="win-tickets">0</span></div>
+                </div>
+
+                <button id="draw-button" class="draw-button">Достать бочонок</button>
+
+                <div class="numbers-drawn">
+                    <h4>Выпавшие числа:</h4>
+                    <div id="numbers-list" class="numbers-list"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="remaining-barrels" id="remaining-barrels" style="display: none;">
+            <h3>Невыпавшие бочонки:</h3>
+            <div id="remaining-list" class="remaining-list"></div>
+        </div>
+
+        <div class="game-over" id="game-over" style="display: none;">
+            <h2>🎉 Тираж завершён! 🎉</h2>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="game.js"></script>
+</body>
+
+</html>

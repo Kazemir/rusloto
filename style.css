@@ -1,0 +1,440 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%);
+    color: #ffffff;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+header h1 {
+    font-size: 2.5em;
+    color: #ffd700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    margin-bottom: 10px;
+}
+
+.lottery-info h2 {
+    font-size: 1.8em;
+    color: #ffffff;
+    margin-bottom: 5px;
+}
+
+.lottery-info p {
+    font-size: 1.1em;
+    color: #cccccc;
+}
+
+/* Стартовый экран */
+.start-screen {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 15px;
+    padding: 40px;
+    margin-bottom: 30px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+    animation: fadeIn 0.5s ease-in;
+}
+
+.start-content {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.start-content h2 {
+    font-size: 2.5em;
+    color: #ffd700;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.start-lottery-info {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.start-draw-number {
+    font-size: 1.8em;
+    font-weight: bold;
+    color: #ffffff;
+    margin-bottom: 5px;
+}
+
+.start-draw-date {
+    font-size: 1.1em;
+    color: #cccccc;
+}
+
+.lottery-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.stat-card {
+    background: rgba(255, 215, 0, 0.1);
+    border: 2px solid #ffd700;
+    border-radius: 10px;
+    padding: 25px 20px;
+    transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(255, 215, 0, 0.3);
+}
+
+.stat-label {
+    font-size: 0.95em;
+    color: #cccccc;
+    margin-bottom: 15px;
+    line-height: 1.3;
+}
+
+.stat-value {
+    font-size: 2em;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.stat-value.highlight {
+    color: #ffd700;
+}
+
+.stat-value.superprize {
+    color: #ff6b6b;
+    font-size: 1.8em;
+    text-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
+}
+
+.start-game-button {
+    background: linear-gradient(135deg, #ffd700, #ffed4e);
+    color: #1a472a;
+    font-size: 1.5em;
+    font-weight: bold;
+    padding: 20px 50px;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6);
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+}
+
+.start-game-button:hover {
+    background: linear-gradient(135deg, #ffed4e, #ffd700);
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 25px rgba(255, 215, 0, 0.8);
+}
+
+.start-game-button:active {
+    transform: translateY(-1px) scale(1.02);
+}
+
+.game-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+#canvas-container {
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+    height: 500px;
+}
+
+.info-panel {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.tour-info {
+    text-align: center;
+    background: rgba(255, 215, 0, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+    border: 2px solid #ffd700;
+}
+
+.tour-info h3 {
+    font-size: 1.8em;
+    color: #ffd700;
+    margin-bottom: 15px;
+}
+
+.current-number {
+    font-size: 4em;
+    font-weight: bold;
+    color: #ffffff;
+    background: linear-gradient(135deg, #8B4513, #A0522D);
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+    border: 4px solid #654321;
+}
+
+.win-info {
+    background: rgba(255, 215, 0, 0.2);
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    border: 2px solid #ffd700;
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.win-label {
+    font-size: 1.1em;
+    color: #cccccc;
+    margin-bottom: 10px;
+}
+
+.win-amount {
+    font-size: 2.5em;
+    font-weight: bold;
+    color: #ffd700;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.win-tickets {
+    font-size: 1em;
+    color: #ffffff;
+}
+
+.draw-button {
+    background: linear-gradient(135deg, #ffd700, #ffed4e);
+    color: #1a472a;
+    font-size: 1.3em;
+    font-weight: bold;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.5);
+    transition: all 0.3s ease;
+}
+
+.draw-button:hover:not(:disabled) {
+    background: linear-gradient(135deg, #ffed4e, #ffd700);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.7);
+}
+
+.draw-button:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.draw-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.numbers-drawn {
+    flex: 1;
+}
+
+.numbers-drawn h4 {
+    font-size: 1.2em;
+    color: #ffd700;
+    margin-bottom: 15px;
+}
+
+.numbers-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    max-height: 200px;
+    overflow-y: auto;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+}
+
+.numbers-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.numbers-list::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+}
+
+.numbers-list::-webkit-scrollbar-thumb {
+    background: #ffd700;
+    border-radius: 4px;
+}
+
+.number-badge {
+    background: linear-gradient(135deg, #8B4513, #A0522D);
+    color: #ffffff;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 1em;
+    min-width: 40px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    border: 2px solid #654321;
+}
+
+.remaining-barrels {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+    margin-bottom: 20px;
+}
+
+.remaining-barrels h3 {
+    font-size: 1.5em;
+    color: #ffd700;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.remaining-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+}
+
+.number-badge.remaining {
+    background: linear-gradient(135deg, #666, #888);
+    border-color: #444;
+    opacity: 0.7;
+}
+
+.game-over {
+    background: rgba(255, 215, 0, 0.2);
+    padding: 40px;
+    border-radius: 15px;
+    text-align: center;
+    border: 3px solid #ffd700;
+    box-shadow: 0 8px 25px rgba(255, 215, 0, 0.5);
+    animation: gameOverAnimation 0.8s ease-in;
+}
+
+@keyframes gameOverAnimation {
+    0% {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.game-over h2 {
+    font-size: 2.5em;
+    color: #ffd700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Адаптивность */
+@media (max-width: 1024px) {
+    .game-wrapper {
+        grid-template-columns: 1fr;
+    }
+
+    #canvas-container {
+        height: 400px;
+    }
+}
+
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 2em;
+    }
+
+    .lottery-info h2 {
+        font-size: 1.5em;
+    }
+
+    .start-content h2 {
+        font-size: 2em;
+    }
+
+    .lottery-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .stat-value {
+        font-size: 1.6em;
+    }
+
+    .stat-value.superprize {
+        font-size: 1.9em;
+    }
+
+    .start-game-button {
+        font-size: 1.2em;
+        padding: 15px 40px;
+    }
+
+    .current-number {
+        font-size: 3em;
+        width: 100px;
+        height: 100px;
+    }
+
+    .win-amount {
+        font-size: 2em;
+    }
+
+    .draw-button {
+        font-size: 1.1em;
+        padding: 12px 24px;
+    }
+}
