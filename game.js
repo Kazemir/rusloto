@@ -259,6 +259,9 @@ function drawNextNumber() {
 
         gameState.currentIndex++;
 
+        // Проверяем предвыигрышную ситуацию
+        checkPreWinSituation(tour);
+
         // Проверяем, закончился ли тур
         const nextDraw = gameState.allNumbers[gameState.currentIndex];
         if (!nextDraw || nextDraw.tour !== tour) {
@@ -279,6 +282,43 @@ function showWinInfo(tour) {
         document.getElementById('win-amount').textContent = formatNumber(tourData.prize) + ' ₽';
         document.getElementById('win-tickets').textContent = formatNumber(tourData.winners);
         document.getElementById('win-info').style.display = 'block';
+    }
+}
+
+// Проверка и отображение предвыигрышной ситуации
+function checkPreWinSituation(currentTour) {
+    const preWinAlert = document.getElementById('pre-win-alert');
+
+    // Подсчитываем сколько чисел выпало в текущем туре
+    let numbersInCurrentTour = 0;
+    for (let i = 0; i < gameState.currentIndex; i++) {
+        if (gameState.allNumbers[i] && gameState.allNumbers[i].tour === currentTour) {
+            numbersInCurrentTour++;
+        }
+    }
+
+    // Получаем общее количество чисел в туре
+    const tourData = lotteryData.find(t => t.tour === currentTour);
+    if (!tourData) return;
+
+    const totalNumbersInTour = tourData.numbers.length;
+
+    // Проверяем условия предвыигрышной ситуации
+    let shouldShow = false;
+
+    if (currentTour === 1 && numbersInCurrentTour >= 4 && numbersInCurrentTour < totalNumbersInTour) {
+        shouldShow = true;
+    } else if (currentTour === 2 && numbersInCurrentTour >= 14 && numbersInCurrentTour < totalNumbersInTour) {
+        shouldShow = true;
+    } else if (currentTour === 3 && numbersInCurrentTour >= 29 && numbersInCurrentTour < totalNumbersInTour) {
+        shouldShow = true;
+    }
+
+    // Показываем/скрываем индикатор
+    if (shouldShow) {
+        preWinAlert.style.display = 'block';
+    } else {
+        preWinAlert.style.display = 'none';
     }
 }
 
