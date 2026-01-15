@@ -27,6 +27,25 @@ const lotteryData = [
     { tour: 25, numbers: [5], winners: 49349, prize: 150 }
 ];
 
+// Правила туров для модального окна
+const tourRules = {
+    1: {
+        image: 'rules_tour_1.svg',
+        title: 'Первый тур',
+        description: 'В первом туре выигрывают билеты, в которых раньше, чем в других совпали 5 чисел в любой горизонтальной строке. Как только появляется победитель или победители, тур закончен.'
+    },
+    2: {
+        image: 'rules_tour_2.svg',
+        title: 'Второй тур',
+        description: 'Во втором туре выигрывают билеты, в которых все 15 чисел в одном из полей (верхнем или нижнем) раньше других совпали с номерами бочонков или шаров. Если все 15 чисел в одном из полей совпали на 15-м ходу - участник выигрывает Джекпот.'
+    },
+    3: {
+        image: 'rules_tour_3.svg',
+        title: 'Третий и последующие туры',
+        description: 'В третьем и последующих турах выигрывают билеты, в которых все 30 чисел раньше, чем в других билетах совпали с номерами бочонков или шаров.'
+    }
+};
+
 // Парсим все числа из тиража
 function parseNumbers() {
     const allNumbers = [];
@@ -409,6 +428,38 @@ function toggleFullscreen() {
     }
 }
 
+// Открыть модальное окно с правилами тура
+function openRulesModal() {
+    const currentTour = parseInt(document.getElementById('current-tour').textContent);
+
+    // Если игра ещё не началась (тур = "-"), не открываем модальное окно
+    if (isNaN(currentTour)) return;
+
+    // Для туров 3 и выше используем правила тура 3
+    const ruleKey = currentTour <= 2 ? currentTour : 3;
+    const rules = tourRules[ruleKey];
+
+    // Обновляем содержимое модального окна
+    document.getElementById('rules-image').src = rules.image;
+    document.getElementById('rules-title').textContent = rules.title;
+    document.getElementById('rules-description').textContent = rules.description;
+
+    // Показываем модальное окно (display: flex для центрирования)
+    document.getElementById('rules-modal').style.display = 'flex';
+}
+
+// Закрыть модальное окно
+function closeRulesModal() {
+    document.getElementById('rules-modal').style.display = 'none';
+}
+
+// Закрыть модальное окно при клике на затемнённый фон
+function handleModalBackdropClick(event) {
+    if (event.target.id === 'rules-modal') {
+        closeRulesModal();
+    }
+}
+
 // Инициализация игры
 function init() {
     // Обработчик для кнопки "Начать игру"
@@ -416,6 +467,25 @@ function init() {
 
     // Обработчик для кнопки полноэкранного режима
     document.getElementById('fullscreen-button').addEventListener('click', toggleFullscreen);
+
+    // Обработчик для кнопки информации
+    document.getElementById('tour-info-btn').addEventListener('click', openRulesModal);
+
+    // Обработчик для кнопки "Хорошо"
+    document.getElementById('close-rules').addEventListener('click', closeRulesModal);
+
+    // Закрытие по клику на фон
+    document.getElementById('rules-modal').addEventListener('click', handleModalBackdropClick);
+
+    // Закрытие по клавише ESC
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            const modal = document.getElementById('rules-modal');
+            if (modal.style.display === 'flex') {
+                closeRulesModal();
+            }
+        }
+    });
 }
 
 // Запуск игры
