@@ -350,10 +350,26 @@ function endGame() {
     document.getElementById('remaining-barrels').style.display = 'block';
 }
 
+// Переключение полноэкранного режима
+function toggleFullscreen() {
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch((err) => {
+            console.error(`Ошибка при попытке включить полноэкранный режим: ${err.message}`);
+        });
+    } else {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        }
+    }
+}
+
 // Инициализация игры
 function init() {
     // Обработчик для кнопки "Начать игру"
     document.getElementById('start-game-button').addEventListener('click', startGame);
+
+    // Обработчик для кнопки полноэкранного режима
+    document.getElementById('fullscreen-button').addEventListener('click', toggleFullscreen);
 }
 
 // Запуск игры

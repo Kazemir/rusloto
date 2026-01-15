@@ -9,12 +9,46 @@ body {
     background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%);
     color: #ffffff;
     min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     padding: 20px;
 }
 
 .container {
     max-width: 1400px;
+    width: 100%;
     margin: 0 auto;
+    position: relative;
+}
+
+/* Кнопка полноэкранного режима */
+.fullscreen-button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: rgba(255, 215, 0, 0.2);
+    border: 2px solid #ffd700;
+    border-radius: 10px;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.fullscreen-button:hover {
+    background: rgba(255, 215, 0, 0.4);
+    transform: scale(1.1);
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.5);
+}
+
+.fullscreen-icon {
+    font-size: 24px;
+    color: #ffd700;
 }
 
 header {
@@ -440,6 +474,15 @@ header h1 {
 }
 
 @media (max-width: 768px) {
+    .fullscreen-button {
+        width: 40px;
+        height: 40px;
+    }
+
+    .fullscreen-icon {
+        font-size: 20px;
+    }
+
     header h1 {
         font-size: 2em;
     }
