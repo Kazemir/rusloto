@@ -267,10 +267,13 @@ header h1 {
 }
 
 @keyframes pulseAlert {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: scale(1);
         box-shadow: 0 0 20px rgba(255, 107, 107, 0.6);
     }
+
     50% {
         transform: scale(1.02);
         box-shadow: 0 0 30px rgba(255, 107, 107, 0.9);
@@ -278,9 +281,12 @@ header h1 {
 }
 
 @keyframes bounce {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: translateY(0);
     }
+
     50% {
         transform: translateY(-10px);
     }
@@ -402,6 +408,19 @@ header h1 {
     border: 2px solid #654321;
 }
 
+.number-badge-remaining {
+    background: linear-gradient(135deg, #8B4513, #A0522D);
+    color: #ffffff;
+    padding: 4px 6px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 1em;
+    min-width: 20px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    border: 2px solid #654321;
+}
+
 .remaining-barrels {
     background: rgba(0, 0, 0, 0.3);
     padding: 30px;
@@ -460,6 +479,65 @@ header h1 {
     font-size: 2.5em;
     color: #ffd700;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Таблица результатов */
+.results-table-container {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 15px;
+    padding: 30px;
+    margin-top: 30px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+    animation: fadeIn 0.5s ease-in;
+}
+
+.results-table-container h2 {
+    text-align: center;
+    font-size: 2em;
+    color: #ffd700;
+    margin-bottom: 10px;
+}
+
+.results-date {
+    text-align: center;
+    font-size: 1.1em;
+    color: #cccccc;
+    margin-bottom: 30px;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+.results-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.results-table th {
+    background: rgba(255, 215, 0, 0.2);
+    color: #ffd700;
+    padding: 15px 10px;
+    text-align: left;
+    font-weight: bold;
+    border-bottom: 2px solid #ffd700;
+}
+
+.results-table td {
+    padding: 12px 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+}
+
+.results-table tr:hover {
+    background: rgba(255, 215, 0, 0.1);
+}
+
+.results-table tr:last-child td {
+    border-bottom: none;
 }
 
 /* Адаптивность */
@@ -533,5 +611,19 @@ header h1 {
     .draw-button {
         font-size: 1.1em;
         padding: 12px 24px;
+    }
+
+    .results-table-container {
+        padding: 20px;
+    }
+
+    .results-table-container h2 {
+        font-size: 1.5em;
+    }
+
+    .results-table th,
+    .results-table td {
+        padding: 8px 6px;
+        font-size: 0.9em;
     }
 }

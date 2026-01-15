@@ -259,6 +259,12 @@ function drawNextNumber() {
 
         gameState.currentIndex++;
 
+        // Проверяем, закончилась ли игра
+        if (gameState.currentIndex >= gameState.allNumbers.length) {
+            endGame();
+            return;
+        }
+
         // Проверяем предвыигрышную ситуацию
         checkPreWinSituation(tour);
 
@@ -330,10 +336,21 @@ function updateDrawnNumbers() {
 }
 
 function endGame() {
-    document.getElementById('draw-button').style.display = 'none';
+    // Меняем текст и обработчик кнопки
+    const drawButton = document.getElementById('draw-button');
+    drawButton.textContent = 'Показать невыпавшие числа';
+    drawButton.onclick = showResults;
+    drawButton.style.display = 'block';
+}
+
+function showResults() {
+    // Скрываем игровой экран
+    document.getElementById('game-screen').style.display = 'none';
+
+    // Показываем "Тираж завершён"
     document.getElementById('game-over').style.display = 'block';
 
-    // Показываем невыпавшие бочонки
+    // Вычисляем и показываем невыпавшие бочонки
     const drawnSet = new Set(gameState.drawnNumbers);
     const remaining = [];
     for (let i = 1; i <= 90; i++) {
@@ -348,6 +365,32 @@ function endGame() {
         .join('');
 
     document.getElementById('remaining-barrels').style.display = 'block';
+
+    // Генерируем таблицу результатов
+    generateResultsTable();
+    document.getElementById('results-table').style.display = 'block';
+}
+
+function generateResultsTable() {
+    const tbody = document.getElementById('results-table-body');
+
+    const rows = lotteryData.map(tour => {
+        // Форматируем числа: соединяем массив в строку
+        const numbersStr = tour.numbers
+            .map(n => `<span class="number-badge-remaining">${n}</span>`)
+            .join('');
+
+        return `
+            <tr>
+                <td>${tour.tour}</td>
+                <td class="numbers-list">${numbersStr}</td>
+                <td>${formatNumber(tour.winners)}</td>
+                <td>${formatNumber(tour.prize)}</td>
+            </tr>
+        `;
+    }).join('');
+
+    tbody.innerHTML = rows;
 }
 
 // Переключение полноэкранного режима
