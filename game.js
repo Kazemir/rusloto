@@ -333,6 +333,9 @@ function updateDrawnNumbers() {
     numbersList.innerHTML = gameState.drawnNumbers
         .map(n => `<span class="number-badge">${n}</span>`)
         .join('');
+
+    // Автоматически прокручиваем вниз к последним числам
+    numbersList.scrollTop = numbersList.scrollHeight;
 }
 
 function endGame() {
