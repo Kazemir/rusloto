@@ -17,9 +17,10 @@
         <header>
             <h1>Русское лото</h1>
             <div class="lottery-info">
-                <h2>Тираж №1711</h2>
-                <p>14 января 2026 18:00</p>
+                <h2>Тираж №<span id="lottery-number">1711</span></h2>
+                <p id="lottery-date">14 января 2026 18:00</p>
             </div>
+            <button id="change-draw-btn" class="change-draw-btn">Другой тираж</button>
         </header>
 
         <div id="start-screen" class="start-screen">
@@ -27,17 +28,17 @@
                 <div class="lottery-stats">
                     <div class="stat-card">
                         <div class="stat-label">Количество купленных билетов</div>
-                        <div class="stat-value">782 854</div>
+                        <div class="stat-value" id="tickets-sold">782 854</div>
                     </div>
 
                     <div class="stat-card">
                         <div class="stat-label">Призовой фонд тиража</div>
-                        <div class="stat-value highlight">58 714 050 ₽</div>
+                        <div class="stat-value highlight" id="prize-fund">58 714 050 ₽</div>
                     </div>
 
                     <div class="stat-card">
                         <div class="stat-label">Суперприз</div>
-                        <div class="stat-value superprize">900 000 000 ₽</div>
+                        <div class="stat-value superprize" id="superprize-amount">900 000 000 ₽</div>
                     </div>
                 </div>
 
@@ -92,6 +93,26 @@
             </div>
         </div>
 
+        <!-- Попап для загрузки другого тиража -->
+        <div id="load-draw-modal" class="modal-backdrop" style="display: none;">
+            <div class="modal-dialog modal-dialog-small">
+                <h3>Загрузить тираж</h3>
+                <div class="input-group">
+                    <label for="draw-number-input">Номер тиража:</label>
+                    <input type="number" id="draw-number-input" class="draw-number-input"
+                           placeholder="Например, 1710" min="1" max="9999">
+                </div>
+                <div id="load-error" class="load-error" style="display: none;"></div>
+                <div class="modal-actions">
+                    <button id="cancel-load-btn" class="modal-btn modal-btn-secondary">Отмена</button>
+                    <button id="load-draw-btn" class="modal-btn modal-btn-primary">
+                        <span class="btn-text">Загрузить данные</span>
+                        <span class="btn-spinner" style="display: none;">⏳</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <div class="game-over" id="game-over" style="display: none;">
             <h2>🎉 Тираж завершён! 🎉</h2>
         </div>
@@ -102,8 +123,8 @@
         </div>
 
         <div class="results-table-container" id="results-table" style="display: none;">
-            <h2>Результаты тиража №1711</h2>
-            <p class="results-date">14 января 2026 18:00</p>
+            <h2>Результаты тиража №<span id="results-lottery-number">1711</span></h2>
+            <p class="results-date" id="results-lottery-date">14 января 2026 18:00</p>
 
             <div class="table-wrapper">
                 <table class="results-table">

@@ -27,6 +27,16 @@ const lotteryData = [
     { tour: 25, numbers: [5], winners: 49349, prize: 150 }
 ];
 
+// Глобальная конфигурация текущего тиража
+let currentDrawConfig = {
+    number: 1711,
+    date: new Date('2026-01-14T18:00:00'),
+    ticketsSold: 782854,
+    prizeFund: 58714050,
+    superprize: 900000000,
+    toursData: lotteryData  // Ссылка на массив туров
+};
+
 // Правила туров для модального окна
 const tourRules = {
     1: {
@@ -55,6 +65,125 @@ function parseNumbers() {
         });
     });
     return allNumbers;
+}
+
+// Парсинг данных с сайта stoloto.ru
+async function loadDrawData(drawNumber) {
+    // Используем CORS proxy для обхода ограничений
+    const targetUrl = `https://www.stoloto.ru/ruslotto/archive/${drawNumber}`;
+    const url = `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`;
+
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`Тираж №${drawNumber} не найден`);
+        }
+
+        const html = await response.text();
+
+        // Извлекаем JSON из <script id="__NEXT_DATA__">
+        const scriptMatch = html.match(/<script id="__NEXT_DATA__"[^>]*>(.*?)<\/script>/);
+        if (!scriptMatch) {
+            throw new Error('Тираж №${drawNumber} не найден');
+        }
+
+        const jsonData = JSON.parse(scriptMatch[1]);
+
+        // Проверяем наличие всех необходимых полей
+        if (!jsonData.props || !jsonData.props.pageProps || !jsonData.props.pageProps.dehydratedState) {
+            throw new Error(`Тираж №${drawNumber} не найден`);
+        }
+
+        const queries = jsonData.props.pageProps.dehydratedState.queries;
+        if (!queries || !queries[0] || !queries[0].state || !queries[0].state.data) {
+            throw new Error(`Тираж №${drawNumber} не найден`);
+        }
+
+        const draw = queries[0].state.data.draw;
+
+        if (!draw) {
+            throw new Error(`Тираж №${drawNumber} не найден`);
+        }
+
+        // Проверяем, прошёл ли розыгрыш (есть ли данные о турах)
+        if (!draw.winCategories || draw.winCategories.length === 0) {
+            throw new Error(`Розыгрыш тиража №${drawNumber} ещё не прошёл`);
+        }
+
+        // Преобразуем данные в наш формат
+        const parsedData = {
+            number: draw.number,
+            date: new Date(draw.date),
+            ticketsSold: draw.ticketCount || draw.betsCount,
+            prizeFund: draw.summPayed,
+            superprize: draw.superPrize,
+            toursData: draw.winCategories.map(tour => ({
+                tour: tour.number,
+                numbers: Array.isArray(tour.numbers) ? tour.numbers : [tour.numbers],
+                winners: tour.participants,
+                prize: tour.amount
+            }))
+        };
+
+        return parsedData;
+
+    } catch (error) {
+        console.error('Ошибка загрузки тиража:', error);
+        throw error;
+    }
+}
+
+// Обновление UI с новыми данными тиража
+function updateDrawUI(drawData) {
+    // Обновляем глобальную конфигурацию
+    currentDrawConfig = drawData;
+
+    // Заменяем lotteryData
+    lotteryData.length = 0;  // Очищаем массив
+    lotteryData.push(...drawData.toursData);  // Заполняем новыми данными
+
+    // Форматируем дату
+    const dateStr = formatDrawDate(drawData.date);
+
+    // Обновляем title
+    document.title = `Русское лото - Тираж №${drawData.number}`;
+
+    // Обновляем header
+    document.getElementById('lottery-number').textContent = drawData.number;
+    document.getElementById('lottery-date').textContent = dateStr;
+
+    // Обновляем статистику
+    document.getElementById('tickets-sold').textContent = formatNumber(drawData.ticketsSold);
+    document.getElementById('prize-fund').textContent = formatNumber(drawData.prizeFund) + ' ₽';
+    document.getElementById('superprize-amount').textContent = formatNumber(drawData.superprize) + ' ₽';
+
+    // Обновляем результаты (если они видны)
+    document.getElementById('results-lottery-number').textContent = drawData.number;
+    document.getElementById('results-lottery-date').textContent = dateStr;
+
+    // Пересоздаём gameState
+    gameState.allNumbers = parseNumbers();
+    gameState.currentIndex = 0;
+    gameState.drawnNumbers = [];
+
+    // Показываем кнопку "Другой тираж" обратно (загрузка происходит на стартовом экране)
+    document.getElementById('change-draw-btn').style.visibility = 'visible';
+}
+
+// Форматирование даты в "14 января 2026 18:00"
+function formatDrawDate(date) {
+    const months = [
+        'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
+        'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'
+    ];
+
+    const day = date.getDate();
+    const month = months[date.getMonth()];
+    const year = date.getFullYear();
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+
+    return `${day} ${month} ${year} ${hours}:${minutes}`;
 }
 
 // Игровое состояние
@@ -460,6 +589,68 @@ function handleModalBackdropClick(event) {
     }
 }
 
+// Открыть попап загрузки тиража
+function openLoadDrawModal() {
+    document.getElementById('load-draw-modal').style.display = 'flex';
+    document.getElementById('draw-number-input').value = '';
+    document.getElementById('load-error').style.display = 'none';
+}
+
+// Закрыть попап загрузки тиража
+function closeLoadDrawModal() {
+    document.getElementById('load-draw-modal').style.display = 'none';
+}
+
+// Обработчик загрузки тиража
+async function handleLoadDraw() {
+    const input = document.getElementById('draw-number-input');
+    const drawNumber = parseInt(input.value);
+
+    if (!drawNumber || drawNumber < 1) {
+        showLoadError('Введите корректный номер тиража');
+        return;
+    }
+
+    // Показываем спиннер
+    const btn = document.getElementById('load-draw-btn');
+    const btnText = btn.querySelector('.btn-text');
+    const btnSpinner = btn.querySelector('.btn-spinner');
+
+    btn.disabled = true;
+    btnText.style.display = 'none';
+    btnSpinner.style.display = 'inline';
+    document.getElementById('load-error').style.display = 'none';
+
+    try {
+        const drawData = await loadDrawData(drawNumber);
+        updateDrawUI(drawData);
+        closeLoadDrawModal();
+
+    } catch (error) {
+        showLoadError(error.message || 'Не удалось загрузить данные тиража');
+
+    } finally {
+        // Скрываем спиннер
+        btn.disabled = false;
+        btnText.style.display = 'inline';
+        btnSpinner.style.display = 'none';
+    }
+}
+
+// Показать сообщение об ошибке
+function showLoadError(message) {
+    const errorDiv = document.getElementById('load-error');
+    errorDiv.textContent = message;
+    errorDiv.style.display = 'block';
+}
+
+// Закрытие по клику на фон
+function handleLoadDrawBackdropClick(event) {
+    if (event.target.id === 'load-draw-modal') {
+        closeLoadDrawModal();
+    }
+}
+
 // Инициализация игры
 function init() {
     // Обработчик для кнопки "Начать игру"
@@ -477,12 +668,31 @@ function init() {
     // Закрытие по клику на фон
     document.getElementById('rules-modal').addEventListener('click', handleModalBackdropClick);
 
+    // Обработчик для кнопки "Другой тираж"
+    document.getElementById('change-draw-btn').addEventListener('click', openLoadDrawModal);
+
+    // Обработчики для попапа загрузки
+    document.getElementById('cancel-load-btn').addEventListener('click', closeLoadDrawModal);
+    document.getElementById('load-draw-btn').addEventListener('click', handleLoadDraw);
+    document.getElementById('load-draw-modal').addEventListener('click', handleLoadDrawBackdropClick);
+
+    // Enter в поле ввода = загрузить
+    document.getElementById('draw-number-input').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            handleLoadDraw();
+        }
+    });
+
     // Закрытие по клавише ESC
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
-            const modal = document.getElementById('rules-modal');
-            if (modal.style.display === 'flex') {
+            const rulesModal = document.getElementById('rules-modal');
+            const loadModal = document.getElementById('load-draw-modal');
+
+            if (rulesModal.style.display === 'flex') {
                 closeRulesModal();
+            } else if (loadModal.style.display === 'flex') {
+                closeLoadDrawModal();
             }
         }
     });
@@ -492,6 +702,9 @@ function init() {
 function startGame() {
     // Скрываем стартовый экран
     document.getElementById('start-screen').style.display = 'none';
+
+    // Скрываем кнопку "Другой тираж"
+    document.getElementById('change-draw-btn').style.visibility = 'hidden';
 
     // Показываем игровой экран
     document.getElementById('game-screen').style.display = 'grid';
